@@ -71,7 +71,7 @@
   .log-section{margin-top:1.5rem;background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);box-shadow:var(--shadow);overflow:hidden;}
   .log-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--border);}
   .log-header-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}
-  .log-list{max-height:260px;overflow-y:auto;}
+  .log-list{max-height:480px;overflow-y:auto;}
   .log-empty{padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
   .log-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);animation:slideIn .25s ease;}
   @keyframes slideIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
@@ -293,11 +293,12 @@ function renderLogs() {
   if (!todayLogs.length) { el.innerHTML = '<div class="log-empty">まだきろくがありません 🌟</div>'; return; }
   el.innerHTML = todayLogs.map(l => {
     const t = new Date(l.created_at);
-    const time = `${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const dateStr = `${t.getMonth()+1}/${t.getDate()}`;
+    const timeStr = `${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;
     return `<div class="log-item">
       <span class="log-pts ${l.mode}">${l.points>0?'+'+l.points:l.points}円</span>
       <span class="log-text">${l.task_name}</span>
-      <span class="log-time">${time}</span>
+      <span class="log-time">${dateStr} ${timeStr}</span>
     </div>`;
   }).join('');
 }
