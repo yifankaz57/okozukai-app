@@ -113,8 +113,8 @@
   <div class="name-selector">
     <div class="name-label">👤 だれ？</div>
     <div class="name-btns" id="name-btns">
-      <button class="name-btn active" onclick="selectChild('こども1')">こども1</button>
-      <button class="name-btn" onclick="selectChild('こども2')">こども2</button>
+      <button class="name-btn" onclick="selectChild('さつき')">さつき</button>
+      <button class="name-btn" onclick="selectChild('あおい')">あおい</button>
       <button class="name-btn" onclick="selectChild('こども3')">こども3</button>
     </div>
   </div>
@@ -184,7 +184,22 @@ const TASKS = [
 
 const CATS = ["すべて","勉強","服","リビング","1F","3F","特別"];
 let activeCat = "すべて";
-let childName = 'こども1';
+const CHILD_NAMES = ['さつき','あおい','こども3'];
+
+function getCookie(name) {
+  const m = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+  return m ? decodeURIComponent(m[1]) : null;
+}
+function setCookie(name, value) {
+  const expires = new Date(Date.now() + 365*24*60*60*1000).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires};path=/`;
+}
+
+const savedChild = getCookie('okozukai_child');
+let childName = (savedChild && CHILD_NAMES.includes(savedChild)) ? savedChild : 'さつき';
+
+// Set active button on load
+document.querySelectorAll('.name-btn').forEach(b => b.classList.toggle('active', b.textContent === childName));
 let todayLogs = [];
 let monthTotal = 0;
 
@@ -194,6 +209,7 @@ document.getElementById('month-tag').textContent = `📅 ${now.getFullYear()}年
 
 function selectChild(name) {
   childName = name;
+  setCookie('okozukai_child', name);
   document.querySelectorAll('.name-btn').forEach(b => b.classList.toggle('active', b.textContent === name));
   loadData();
 }
