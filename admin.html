@@ -378,30 +378,25 @@ function renderChart(){
       </div>`;
     }).join('')}`;
 
-  // --- 件数グラフ ---
-  const sortedC=Object.entries(catMap).sort((a,b)=>(b[1].selfC+b[1].askedC+b[1].penaltyC)-(a[1].selfC+a[1].askedC+a[1].penaltyC));
-  const maxCnt=Math.max(...sortedC.map(([,v])=>v.selfC+v.askedC+v.penaltyC))||1;
+  // --- 件数合計 ---
+  const totalSelf=Object.values(catMap).reduce((s,v)=>s+v.selfC,0);
+  const totalAsked=Object.values(catMap).reduce((s,v)=>s+v.askedC,0);
+  const totalPenalty=Object.values(catMap).reduce((s,v)=>s+v.penaltyC,0);
   document.getElementById('chart-count').innerHTML=`
-    <div class="chart-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#06D6A0"></div>自分で</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#118AB2"></div>言われて</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#EF476F"></div>ペナルティ</div>
-    </div>
-    ${sortedC.map(([cat,v])=>{
-      const total=v.selfC+v.askedC+v.penaltyC;
-      const selfW=(v.selfC/maxCnt*100).toFixed(1);
-      const askedW=(v.askedC/maxCnt*100).toFixed(1);
-      const penW=(v.penaltyC/maxCnt*100).toFixed(1);
-      return `<div class="bar-row">
-        <div class="bar-label" title="${cat}">${cat}</div>
-        <div class="bar-track">
-          ${v.selfC>0?`<div class="bar-seg" style="width:${selfW}%;background:#06D6A0"><span>${v.selfC}件</span></div>`:''}
-          ${v.askedC>0?`<div class="bar-seg" style="width:${askedW}%;background:#118AB2"><span>${v.askedC}件</span></div>`:''}
-          ${v.penaltyC>0?`<div class="bar-seg" style="width:${penW}%;background:#EF476F"><span>${v.penaltyC}件</span></div>`:''}
-        </div>
-        <div class="bar-total" style="color:var(--muted)">${total}件</div>
-      </div>`;
-    }).join('')}`;
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:120px;background:var(--green-light);border-radius:14px;padding:1.2rem;text-align:center;">
+        <div style="font-size:13px;font-weight:700;color:var(--green-dark);margin-bottom:6px;">🟢 自分で</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;color:var(--green-dark);">${totalSelf}<span style="font-size:16px;">件</span></div>
+      </div>
+      <div style="flex:1;min-width:120px;background:var(--blue-light);border-radius:14px;padding:1.2rem;text-align:center;">
+        <div style="font-size:13px;font-weight:700;color:var(--blue-dark);margin-bottom:6px;">🔵 言われて</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;color:var(--blue-dark);">${totalAsked}<span style="font-size:16px;">件</span></div>
+      </div>
+      <div style="flex:1;min-width:120px;background:var(--red-light);border-radius:14px;padding:1.2rem;text-align:center;">
+        <div style="font-size:13px;font-weight:700;color:var(--red-dark);margin-bottom:6px;">🔴 ペナルティ</div>
+        <div style="font-family:'Nunito',sans-serif;font-size:36px;font-weight:900;color:var(--red-dark);">${totalPenalty}<span style="font-size:16px;">件</span></div>
+      </div>
+    </div>`;
 }
 function renderTable(){
   const logs=filteredLogs();
