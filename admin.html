@@ -75,7 +75,18 @@
   .mode-badge.self{background:var(--green-light);color:var(--green-dark);}
   .mode-badge.asked{background:var(--blue-light);color:var(--blue-dark);}
   .mode-badge.minus{background:var(--red-light);color:var(--red-dark);}
-  .empty{padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
+  .pw-overlay{position:fixed;inset:0;background:#F5F7FA;z-index:9999;display:flex;align-items:center;justify-content:center;}
+  .pw-box{background:#fff;border-radius:24px;padding:2.5rem 2rem;width:100%;max-width:340px;box-shadow:0 8px 40px rgba(0,0,0,0.12);text-align:center;}
+  .pw-icon{font-size:48px;margin-bottom:1rem;}
+  .pw-title{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;margin-bottom:6px;}
+  .pw-sub{font-size:13px;color:var(--muted);margin-bottom:1.5rem;}
+  .pw-input{width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);font-size:24px;font-family:'Nunito',sans-serif;font-weight:800;text-align:center;letter-spacing:8px;outline:none;transition:border .2s;}
+  .pw-input:focus{border-color:var(--purple);}
+  .pw-input.error{border-color:var(--red);animation:shake .3s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+  .pw-btn{margin-top:1rem;width:100%;padding:12px;border-radius:12px;border:none;background:var(--purple);color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:'Zen Maru Gothic',sans-serif;transition:all .15s;}
+  .pw-btn:hover{background:#6D28D9;}
+  .pw-error{color:var(--red);font-size:13px;font-weight:700;margin-top:8px;min-height:20px;}
   .loading{padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
 
   /* ===== TASK MANAGER ===== */
@@ -124,7 +135,17 @@
 </style>
 </head>
 <body>
-<div class="page">
+<div class="pw-overlay" id="pw-overlay">
+  <div class="pw-box">
+    <div class="pw-icon">🔐</div>
+    <div class="pw-title">管理画面</div>
+    <div class="pw-sub">パスワードを入力してください</div>
+    <input class="pw-input" id="pw-input" type="password" maxlength="8" placeholder="••••" onkeydown="if(event.key==='Enter')checkPw()">
+    <div class="pw-error" id="pw-error"></div>
+    <button class="pw-btn" onclick="checkPw()">ログイン</button>
+  </div>
+</div>
+<div class="page" id="main-page" style="display:none">
   <a class="back-link" href="index.html">← 子ども画面にもどる</a>
   <div class="page-header">
     <div class="page-title">👨‍👩‍👧 おこづかい管理</div>
@@ -226,8 +247,32 @@
   </div>
 </div>
 
+</div><!-- /main-page -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ===== PASSWORD =====
+const PW = '0507';
+function checkPw(){
+  const val = document.getElementById('pw-input').value;
+  if(val === PW){
+    sessionStorage.setItem('admin_auth','1');
+    document.getElementById('pw-overlay').style.display='none';
+    document.getElementById('main-page').style.display='block';
+    initApp();
+  } else {
+    const inp = document.getElementById('pw-input');
+    inp.classList.add('error');
+    document.getElementById('pw-error').textContent='パスワードが違います';
+    inp.value='';
+    setTimeout(()=>inp.classList.remove('error'),400);
+  }
+}
+// Auto-unlock if already authenticated this session
+if(sessionStorage.getItem('admin_auth')==='1'){
+  document.getElementById('pw-overlay').style.display='none';
+  document.getElementById('main-page').style.display='block';
+}
 const SUPABASE_URL='https://qoixsckcwchhyrbhbnwv.supabase.co';
 const SUPABASE_KEY='sb_publishable_wURtna__TWo7S5F1EIHrcg_dI81aIAO';
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
@@ -503,9 +548,15 @@ async function deleteTask(id){
   await loadTasks();
 }
 
-updateMonthLabel();
-loadStats();
-loadTasks();
+function initApp(){
+  updateMonthLabel();
+  loadStats();
+  loadTasks();
+}
+// Only init if already authenticated
+if(sessionStorage.getItem('admin_auth')==='1'){
+  initApp();
+}
 </script>
 </body>
 </html>
