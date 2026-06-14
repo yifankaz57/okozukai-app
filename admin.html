@@ -288,20 +288,18 @@ function setChild(c){activeChild=c;renderChildTabs();renderChart();renderTable()
 function filteredLogs(){return activeChild==='すべて'?allLogs:allLogs.filter(l=>l.child_name===activeChild);}
 function renderChart(){
   const logs=filteredLogs();
-  // Build per-category stats
   const catMap={};
   logs.forEach(l=>{
-    if(!catMap[l.task_category])catMap[l.task_category]={self:0,asked:0,penalty:0,total:0};
+    if(!catMap[l.task_category])catMap[l.task_category]={self:0,asked:0,penalty:0};
     const m=l.mode;
-    if(m==='minus'){catMap[l.task_category].penalty+=Math.abs(l.points);}
-    else if(m==='asked'){catMap[l.task_category].asked+=l.points;}
-    else{catMap[l.task_category].self+=l.points;}
-    catMap[l.task_category].total+=l.points;
+    if(m==='minus')catMap[l.task_category].penalty++;
+    else if(m==='asked')catMap[l.task_category].asked++;
+    else catMap[l.task_category].self++;
   });
-  const sorted=Object.entries(catMap).sort((a,b)=>b[1].total-a[1].total);
+  const sorted=Object.entries(catMap).sort((a,b)=>(b[1].self+b[1].asked+b[1].penalty)-(a[1].self+a[1].asked+a[1].penalty));
   const el=document.getElementById('chart-bars');
   if(!sorted.length){el.innerHTML='<div class="empty">データなし</div>';return;}
-  const maxTotal=Math.max(...sorted.map(([,v])=>v.self+v.asked+v.penalty))||1;
+  const maxCount=Math.max(...sorted.map(([,v])=>v.self+v.asked+v.penalty))||1;
   el.innerHTML=`
     <div class="chart-legend">
       <div class="legend-item"><div class="legend-dot" style="background:#06D6A0"></div>自分で</div>
@@ -309,20 +307,18 @@ function renderChart(){
       <div class="legend-item"><div class="legend-dot" style="background:#EF476F"></div>ペナルティ</div>
     </div>
     ${sorted.map(([cat,v])=>{
-      const gross=v.self+v.asked+v.penalty||1;
-      const selfW=(v.self/maxTotal*100).toFixed(1);
-      const askedW=(v.asked/maxTotal*100).toFixed(1);
-      const penW=(v.penalty/maxTotal*100).toFixed(1);
+      const total=v.self+v.asked+v.penalty;
+      const selfW=(v.self/maxCount*100).toFixed(1);
+      const askedW=(v.asked/maxCount*100).toFixed(1);
+      const penW=(v.penalty/maxCount*100).toFixed(1);
       return `<div class="bar-row">
         <div class="bar-label" title="${cat}">${cat}</div>
         <div class="bar-track">
-          ${v.self>0?`<div class="bar-seg" style="width:${selfW}%;background:#06D6A0"><span>${v.self>0?v.self+'円':''}</span></div>`:''}
-          ${v.asked>0?`<div class="bar-seg" style="width:${askedW}%;background:#118AB2"><span>${v.asked>0?v.asked+'円':''}</span></div>`:''}
-          ${v.penalty>0?`<div class="bar-seg" style="width:${penW}%;background:#EF476F"><span>${v.penalty>0?'-'+v.penalty+'円':''}</span></div>`:''}
+          ${v.self>0?`<div class="bar-seg" style="width:${selfW}%;background:#06D6A0"><span>${v.self}件</span></div>`:''}
+          ${v.asked>0?`<div class="bar-seg" style="width:${askedW}%;background:#118AB2"><span>${v.asked}件</span></div>`:''}
+          ${v.penalty>0?`<div class="bar-seg" style="width:${penW}%;background:#EF476F"><span>${v.penalty}件</span></div>`:''}
         </div>
-        <div class="bar-total" style="color:${v.total>=0?'var(--green-dark)':'var(--red-dark)'}">
-          ${v.total>=0?'+':''}${v.total}円
-        </div>
+        <div class="bar-total" style="color:var(--muted)">${total}件</div>
       </div>`;
     }).join('')}`;
 }
