@@ -7,473 +7,119 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FFF8F0;
-    --surface: #FFFFFF;
-    --border: #F0E8DC;
-    --text: #2D1B0E;
-    --muted: #8B6F5E;
-    --yellow: #FFD166;
-    --yellow-light: #FFF3CC;
-    --yellow-dark: #B8860B;
-    --green: #06D6A0;
-    --green-light: #D4F7EE;
-    --green-dark: #047A5C;
-    --red: #EF476F;
-    --red-light: #FDDEE6;
-    --red-dark: #8B1A35;
-    --blue: #118AB2;
-    --blue-light: #D4EEF7;
-    --blue-dark: #0A4E66;
-    --purple: #9B5DE5;
-    --purple-light: #EEE0FF;
-    --pink: #F7538A;
-    --orange: #FF7F3F;
-    --radius: 18px;
-    --radius-sm: 10px;
-    --shadow: 0 4px 20px rgba(0,0,0,0.08);
-    --shadow-hover: 0 8px 30px rgba(0,0,0,0.14);
+    --bg:#FFF8F0;--surface:#FFFFFF;--border:#F0E8DC;--text:#2D1B0E;--muted:#8B6F5E;
+    --yellow:#FFD166;--yellow-light:#FFF3CC;--yellow-dark:#B8860B;
+    --green:#06D6A0;--green-light:#D4F7EE;--green-dark:#047A5C;
+    --red:#EF476F;--red-light:#FDDEE6;--red-dark:#8B1A35;
+    --blue:#118AB2;--blue-light:#D4EEF7;--blue-dark:#0A4E66;
+    --radius:18px;--shadow:0 4px 20px rgba(0,0,0,0.08);--shadow-hover:0 8px 30px rgba(0,0,0,0.14);
   }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Zen Maru Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#FFD16622 1.5px,transparent 1.5px);background-size:28px 28px;pointer-events:none;z-index:0;}
+  .container{max-width:540px;margin:0 auto;padding:1.5rem 1rem 4rem;position:relative;z-index:1;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* Name selector */
+  .name-selector{background:var(--surface);border-radius:28px;border:2px solid var(--border);box-shadow:var(--shadow);padding:1.2rem 1.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
+  .name-label{font-size:14px;font-weight:700;color:var(--muted);white-space:nowrap;}
+  .name-btns{display:flex;gap:8px;flex-wrap:wrap;}
+  .name-btn{padding:8px 18px;border-radius:999px;border:2px solid var(--border);font-size:14px;font-weight:700;cursor:pointer;background:var(--surface);color:var(--muted);font-family:'Zen Maru Gothic',sans-serif;transition:all .18s;}
+  .name-btn.active{background:var(--yellow);color:var(--yellow-dark);border-color:var(--yellow);box-shadow:0 3px 10px #FFD16666;}
 
-  body {
-    font-family: 'Zen Maru Gothic', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  .header{text-align:center;margin-bottom:1.5rem;padding:1.5rem 1.5rem 1.2rem;background:var(--surface);border-radius:28px;border:2px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;}
+  .header::before{content:'';position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:radial-gradient(circle,#FFD16644,transparent 70%);border-radius:50%;}
+  .app-title{font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;}
+  .coin-display{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;}
+  .coin-icon{font-size:40px;animation:coinBounce 2s ease-in-out infinite;}
+  @keyframes coinBounce{0%,100%{transform:translateY(0) rotate(-5deg);}50%{transform:translateY(-6px) rotate(5deg);}}
+  .total-amount{font-family:'Nunito',sans-serif;font-size:52px;font-weight:900;color:var(--text);line-height:1;transition:all .3s;}
+  .total-amount.pop{animation:popAmount .4s cubic-bezier(.36,.07,.19,.97);}
+  @keyframes popAmount{0%{transform:scale(1);}40%{transform:scale(1.18);}70%{transform:scale(.95);}100%{transform:scale(1);}}
+  .yen-label{font-family:'Nunito',sans-serif;font-size:22px;font-weight:800;color:var(--muted);align-self:flex-end;padding-bottom:8px;}
+  .month-tag{display:inline-flex;align-items:center;gap:4px;background:var(--yellow-light);color:var(--yellow-dark);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:700;border:1.5px solid var(--yellow);}
 
-  /* Decorative background dots */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: radial-gradient(circle, #FFD16622 1.5px, transparent 1.5px);
-    background-size: 28px 28px;
-    pointer-events: none;
-    z-index: 0;
-  }
+  .tabs-wrap{overflow-x:auto;margin-bottom:1rem;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .tabs-wrap::-webkit-scrollbar{display:none;}
+  .tabs{display:flex;gap:6px;width:max-content;padding:2px;}
+  .tab{padding:8px 16px;border-radius:999px;border:2px solid var(--border);font-size:13px;font-weight:700;cursor:pointer;background:var(--surface);color:var(--muted);transition:all .18s;white-space:nowrap;font-family:'Zen Maru Gothic',sans-serif;}
+  .tab:hover{border-color:var(--yellow);color:var(--text);}
+  .tab.active{background:var(--yellow);color:var(--yellow-dark);border-color:var(--yellow);transform:translateY(-1px);box-shadow:0 3px 10px #FFD16666;}
 
-  .container {
-    max-width: 540px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem 4rem;
-    position: relative;
-    z-index: 1;
-  }
+  .tasks{display:flex;flex-direction:column;gap:10px;}
+  .task-card{background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:all .2s;}
+  .task-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px);}
+  .task-card.penalty-card{border-color:#FFCCD9;}
+  .task-body{padding:12px 14px;display:flex;align-items:center;gap:12px;}
+  .task-emoji{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+  .task-info{flex:1;min-width:0;}
+  .task-name{font-size:14px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:4px;}
+  .task-pts{font-family:'Nunito',sans-serif;font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;}
+  .pt-badge{display:inline-flex;align-items:center;gap:2px;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;}
+  .pt-badge.asked{background:var(--blue-light);color:var(--blue-dark);}
+  .pt-badge.self{background:var(--green-light);color:var(--green-dark);}
+  .pt-badge.pen{background:var(--red-light);color:var(--red-dark);}
+  .task-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+  .btn-action{padding:7px 12px;border-radius:10px;border:none;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;white-space:nowrap;line-height:1;}
+  .btn-action:active{transform:scale(.92);}
+  .btn-asked{background:var(--blue-light);color:var(--blue-dark);border:1.5px solid #90CCEC;}
+  .btn-asked:hover{background:var(--blue);color:#fff;}
+  .btn-self{background:var(--green-light);color:var(--green-dark);border:1.5px solid #80DFC6;}
+  .btn-self:hover{background:var(--green);color:#fff;}
+  .btn-penalty{background:var(--red-light);color:var(--red-dark);border:1.5px solid #F5AABC;}
+  .btn-penalty:hover{background:var(--red);color:#fff;}
 
-  /* ===== HEADER ===== */
-  .header {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    padding: 1.5rem 1.5rem 1.2rem;
-    background: var(--surface);
-    border-radius: 28px;
-    border: 2px solid var(--border);
-    box-shadow: var(--shadow);
-    position: relative;
-    overflow: hidden;
-  }
+  .log-section{margin-top:1.5rem;background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);box-shadow:var(--shadow);overflow:hidden;}
+  .log-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--border);}
+  .log-header-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}
+  .log-list{max-height:260px;overflow-y:auto;}
+  .log-empty{padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
+  .log-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);animation:slideIn .25s ease;}
+  @keyframes slideIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+  .log-item:last-child{border-bottom:none;}
+  .log-pts{font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;min-width:52px;text-align:center;padding:4px 8px;border-radius:8px;flex-shrink:0;}
+  .log-pts.plus{background:var(--green-light);color:var(--green-dark);}
+  .log-pts.minus{background:var(--red-light);color:var(--red-dark);}
+  .log-text{flex:1;font-size:13px;font-weight:600;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .log-time{font-family:'Nunito',sans-serif;font-size:11px;color:var(--muted);flex-shrink:0;}
 
-  .header::before {
-    content: '';
-    position: absolute;
-    top: -20px; right: -20px;
-    width: 120px; height: 120px;
-    background: radial-gradient(circle, #FFD16644, transparent 70%);
-    border-radius: 50%;
-  }
+  .admin-link{display:block;text-align:center;margin-top:1.5rem;color:var(--muted);font-size:12px;text-decoration:none;}
+  .admin-link:hover{color:var(--text);}
 
-  .app-title {
-    font-family: 'Nunito', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
+  /* saving indicator */
+  .saving{position:fixed;top:16px;right:16px;background:var(--green);color:#fff;border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;z-index:999;opacity:0;transition:opacity .3s;}
+  .saving.show{opacity:1;}
 
-  .coin-display {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
+  .confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:9999;}
+  .confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:fall 1s ease-in forwards;}
+  @keyframes fall{0%{transform:translateY(-10px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
+  .toast-container{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:1000;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;}
+  .toast{font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;padding:10px 20px;border-radius:999px;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .3s ease,toastOut .4s 1.8s ease forwards;white-space:nowrap;}
+  .toast.plus{background:var(--green);color:#fff;}
+  .toast.minus{background:var(--red);color:#fff;}
+  @keyframes toastIn{from{opacity:0;transform:translateY(16px) scale(.9);}to{opacity:1;transform:translateY(0) scale(1);}}
+  @keyframes toastOut{from{opacity:1;}to{opacity:0;transform:translateY(8px);}}
+  .log-list::-webkit-scrollbar{width:4px;}
+  .log-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
-  .coin-icon {
-    font-size: 40px;
-    animation: coinBounce 2s ease-in-out infinite;
-  }
-
-  @keyframes coinBounce {
-    0%,100% { transform: translateY(0) rotate(-5deg); }
-    50% { transform: translateY(-6px) rotate(5deg); }
-  }
-
-  .total-amount {
-    font-family: 'Nunito', sans-serif;
-    font-size: 52px;
-    font-weight: 900;
-    color: var(--text);
-    line-height: 1;
-    transition: all 0.3s;
-  }
-
-  .total-amount.pop {
-    animation: popAmount 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
-  }
-
-  @keyframes popAmount {
-    0%  { transform: scale(1); }
-    40% { transform: scale(1.18); }
-    70% { transform: scale(0.95); }
-    100%{ transform: scale(1); }
-  }
-
-  .yen-label {
-    font-family: 'Nunito', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--muted);
-    align-self: flex-end;
-    padding-bottom: 8px;
-  }
-
-  .month-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: var(--yellow-light);
-    color: var(--yellow-dark);
-    border-radius: 999px;
-    padding: 5px 14px;
-    font-size: 13px;
-    font-weight: 700;
-    border: 1.5px solid var(--yellow);
-  }
-
-  /* ===== TABS ===== */
-  .tabs-wrap {
-    overflow-x: auto;
-    margin-bottom: 1rem;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .tabs-wrap::-webkit-scrollbar { display: none; }
-
-  .tabs {
-    display: flex;
-    gap: 6px;
-    width: max-content;
-    padding: 2px;
-  }
-
-  .tab {
-    padding: 8px 16px;
-    border-radius: 999px;
-    border: 2px solid var(--border);
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    background: var(--surface);
-    color: var(--muted);
-    transition: all 0.18s;
-    white-space: nowrap;
-    font-family: 'Zen Maru Gothic', sans-serif;
-  }
-
-  .tab:hover { border-color: var(--yellow); color: var(--text); }
-
-  .tab.active {
-    background: var(--yellow);
-    color: var(--yellow-dark);
-    border-color: var(--yellow);
-    transform: translateY(-1px);
-    box-shadow: 0 3px 10px #FFD16666;
-  }
-
-  /* ===== TASK CARDS ===== */
-  .tasks { display: flex; flex-direction: column; gap: 10px; }
-
-  .task-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 2px solid var(--border);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    transition: all 0.2s;
-  }
-
-  .task-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
-  .task-card.penalty-card { border-color: #FFCCD9; }
-
-  .task-body {
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .task-emoji {
-    width: 46px; height: 46px;
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    flex-shrink: 0;
-  }
-
-  .task-info { flex: 1; min-width: 0; }
-
-  .task-name {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.4;
-    margin-bottom: 4px;
-  }
-
-  .task-pts {
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
-    color: var(--muted);
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .pt-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    border-radius: 999px;
-    padding: 2px 8px;
-    font-size: 11px;
-    font-weight: 800;
-  }
-  .pt-badge.asked { background: var(--blue-light); color: var(--blue-dark); }
-  .pt-badge.self  { background: var(--green-light); color: var(--green-dark); }
-  .pt-badge.pen   { background: var(--red-light); color: var(--red-dark); }
-
-  .task-btns {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    flex-shrink: 0;
-  }
-
-  .btn-action {
-    padding: 7px 12px;
-    border-radius: 10px;
-    border: none;
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-    line-height: 1;
-  }
-
-  .btn-action:active { transform: scale(0.92); }
-
-  .btn-asked {
-    background: var(--blue-light);
-    color: var(--blue-dark);
-    border: 1.5px solid #90CCEC;
-  }
-  .btn-asked:hover { background: var(--blue); color: #fff; }
-
-  .btn-self {
-    background: var(--green-light);
-    color: var(--green-dark);
-    border: 1.5px solid #80DFC6;
-  }
-  .btn-self:hover { background: var(--green); color: #fff; }
-
-  .btn-penalty {
-    background: var(--red-light);
-    color: var(--red-dark);
-    border: 1.5px solid #F5AABC;
-  }
-  .btn-penalty:hover { background: var(--red); color: #fff; }
-
-  /* ===== LOG ===== */
-  .log-section {
-    margin-top: 1.5rem;
-    background: var(--surface);
-    border-radius: var(--radius);
-    border: 2px solid var(--border);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-
-  .log-header {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 2px solid var(--border);
-  }
-
-  .log-header-title {
-    font-size: 14px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .log-clear {
-    font-size: 12px;
-    color: var(--muted);
-    background: none;
-    border: 1.5px solid var(--border);
-    border-radius: 999px;
-    padding: 4px 10px;
-    cursor: pointer;
-    font-family: 'Zen Maru Gothic', sans-serif;
-    font-weight: 700;
-    transition: all 0.15s;
-  }
-  .log-clear:hover { border-color: var(--red); color: var(--red); }
-
-  .log-list {
-    max-height: 260px;
-    overflow-y: auto;
-  }
-
-  .log-empty {
-    padding: 2rem;
-    text-align: center;
-    color: var(--muted);
-    font-size: 14px;
-  }
-
-  .log-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border);
-    animation: slideIn 0.25s ease;
-  }
-
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-
-  .log-item:last-child { border-bottom: none; }
-
-  .log-pts {
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 900;
-    min-width: 52px;
-    text-align: center;
-    padding: 4px 8px;
-    border-radius: 8px;
-    flex-shrink: 0;
-  }
-  .log-pts.plus  { background: var(--green-light); color: var(--green-dark); }
-  .log-pts.minus { background: var(--red-light);   color: var(--red-dark); }
-
-  .log-text {
-    flex: 1;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .log-time {
-    font-family: 'Nunito', sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-    flex-shrink: 0;
-  }
-
-  .log-undo {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
-    background: none;
-    border: 1.5px solid var(--border);
-    border-radius: 6px;
-    padding: 3px 8px;
-    cursor: pointer;
-    font-family: 'Zen Maru Gothic', sans-serif;
-    flex-shrink: 0;
-    transition: all 0.15s;
-  }
-  .log-undo:hover { border-color: var(--red); color: var(--red); }
-
-  /* ===== CELEBRATION ===== */
-  .confetti-layer {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9999;
-  }
-
-  .confetti-piece {
-    position: absolute;
-    width: 10px; height: 10px;
-    border-radius: 2px;
-    animation: fall 1s ease-in forwards;
-  }
-
-  @keyframes fall {
-    0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-  }
-
-  /* ===== TOAST ===== */
-  .toast-container {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    pointer-events: none;
-  }
-
-  .toast {
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 800;
-    padding: 10px 20px;
-    border-radius: 999px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    animation: toastIn 0.3s ease, toastOut 0.4s 1.8s ease forwards;
-    white-space: nowrap;
-  }
-
-  .toast.plus  { background: var(--green); color: #fff; }
-  .toast.minus { background: var(--red); color: #fff; }
-
-  @keyframes toastIn  { from { opacity:0; transform:translateY(16px) scale(0.9); } to { opacity:1; transform:translateY(0) scale(1); } }
-  @keyframes toastOut { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
-
-  /* ===== SCROLLBAR ===== */
-  .log-list::-webkit-scrollbar { width: 4px; }
-  .log-list::-webkit-scrollbar-track { background: transparent; }
-  .log-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  /* disabled state */
+  .tasks.disabled{opacity:.5;pointer-events:none;}
 </style>
 </head>
 <body>
+<div class="saving" id="saving">💾 保存中…</div>
 <div class="container">
 
-  <!-- HEADER -->
+  <!-- Child name selector -->
+  <div class="name-selector">
+    <div class="name-label">👤 だれ？</div>
+    <div class="name-btns" id="name-btns">
+      <button class="name-btn active" onclick="selectChild('こども1')">こども1</button>
+      <button class="name-btn" onclick="selectChild('こども2')">こども2</button>
+      <button class="name-btn" onclick="selectChild('こども3')">こども3</button>
+    </div>
+  </div>
+
+  <!-- Header -->
   <div class="header">
     <div class="app-title">おこづかいトラッカー</div>
     <div class="coin-display">
@@ -484,97 +130,109 @@
     <div class="month-tag" id="month-tag">📅 2026年6月</div>
   </div>
 
-  <!-- TABS -->
-  <div class="tabs-wrap">
-    <div class="tabs" id="tabs"></div>
-  </div>
+  <!-- Tabs -->
+  <div class="tabs-wrap"><div class="tabs" id="tabs"></div></div>
 
-  <!-- TASKS -->
+  <!-- Tasks -->
   <div class="tasks" id="tasks"></div>
 
-  <!-- LOG -->
+  <!-- Log -->
   <div class="log-section">
     <div class="log-header">
-      <div class="log-header-title">📋 きろく</div>
-      <button class="log-clear" onclick="clearLogs()">リセット</button>
+      <div class="log-header-title">📋 今日のきろく</div>
     </div>
     <div class="log-list" id="log-list">
       <div class="log-empty">まだきろくがありません 🌟</div>
     </div>
   </div>
 
+  <a class="admin-link" href="admin.html">👨‍👩‍👧 親の管理画面</a>
 </div>
 
-<!-- Toast container -->
 <div class="toast-container" id="toasts"></div>
-<!-- Confetti layer -->
 <div class="confetti-layer" id="confetti"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = 'https://qoixsckcwchhyrbhbnwv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_wURtna__TWo7S5F1EIHrcg_dI81aIAO';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const TASKS = [
-  {cat:"勉強", name:"学校の宿題をやる",    asked:10, self:20, icon:"📚", bg:"#EEE0FF", penalty:false},
-  {cat:"勉強", name:"公文の勉強をやる",     asked:10, self:20, icon:"✏️", bg:"#EEE0FF", penalty:false},
-  {cat:"勉強", name:"サピックスの宿題・復習",asked:10, self:20, icon:"📖", bg:"#EEE0FF", penalty:false},
-  {cat:"勉強", name:"ベルリッツの宿題をやる",asked:10, self:20, icon:"🗣️", bg:"#EEE0FF", penalty:false},
-  {cat:"服",   name:"脱いだ服・靴下をリビングに放置", asked:-10, self:null, icon:"🧦", bg:"#FDDEE6", penalty:true},
-  {cat:"服",   name:"学校のものを洗濯機に入れる",     asked:10, self:20,   icon:"👕", bg:"#FFE8F3", penalty:false},
-  {cat:"服",   name:"ポケットにティッシュ（ペナルティ）",asked:-20, self:null,icon:"🧻", bg:"#FDDEE6", penalty:true},
-  {cat:"服",   name:"靴下がまとまったまま（ペナルティ）",asked:-10, self:null,icon:"🧤", bg:"#FDDEE6", penalty:true},
-  {cat:"服",   name:"洗濯物をたたむ",            asked:30, self:50, icon:"👗", bg:"#FFE8F3", penalty:false},
-  {cat:"服",   name:"自分のものを引き出しに入れる",asked:20, self:40, icon:"🗂️", bg:"#FFE8F3", penalty:false},
-  {cat:"服",   name:"かばんを棚にもどす",         asked:10, self:20, icon:"🎒", bg:"#FFE8F3", penalty:false},
-  {cat:"リビング", name:"机の上を片付ける",           asked:10, self:20, icon:"🪣", bg:"#D4F7EE", penalty:false},
-  {cat:"リビング", name:"お風呂後すぐ服を着ない（ペナルティ）",asked:-20,self:null,icon:"🛁", bg:"#FDDEE6", penalty:true},
-  {cat:"リビング", name:"ソファの上をきれいにする",     asked:20, self:40, icon:"🛋️", bg:"#D4F7EE", penalty:false},
-  {cat:"リビング", name:"洋服入れの引き出しを閉める",   asked:10, self:20, icon:"🪟", bg:"#D4F7EE", penalty:false},
-  {cat:"リビング", name:"21:30にゲーム・テレビを終了", asked:null, self:10, icon:"📺", bg:"#D4F7EE", penalty:false},
-  {cat:"リビング", name:"翌日の学校の用意を確認",       asked:10, self:20, icon:"📅", bg:"#D4F7EE", penalty:false},
-  {cat:"1F", name:"玄関の靴をそろえる", asked:10, self:20, icon:"👟", bg:"#D4EEF7", penalty:false},
-  {cat:"1F", name:"お風呂場の掃除",    asked:50, self:70, icon:"🚿", bg:"#D4EEF7", penalty:false},
-  {cat:"3F", name:"布団をきれいに敷く",asked:10, self:20, icon:"🛏️", bg:"#FFF3CC", penalty:false},
-  {cat:"特別", name:"おつかい（お母さんに言われた）",asked:100,self:null,icon:"🛍️", bg:"#FFF3CC", penalty:false},
+  {cat:"勉強",name:"学校の宿題をやる",asked:10,self:20,icon:"📚",bg:"#EEE0FF",penalty:false},
+  {cat:"勉強",name:"公文の勉強をやる",asked:10,self:20,icon:"✏️",bg:"#EEE0FF",penalty:false},
+  {cat:"勉強",name:"サピックスの宿題・復習",asked:10,self:20,icon:"📖",bg:"#EEE0FF",penalty:false},
+  {cat:"勉強",name:"ベルリッツの宿題をやる",asked:10,self:20,icon:"🗣️",bg:"#EEE0FF",penalty:false},
+  {cat:"服",name:"脱いだ服・靴下をリビングに放置",asked:-10,self:null,icon:"🧦",bg:"#FDDEE6",penalty:true},
+  {cat:"服",name:"学校のものを洗濯機に入れる",asked:10,self:20,icon:"👕",bg:"#FFE8F3",penalty:false},
+  {cat:"服",name:"ポケットにティッシュ（ペナルティ）",asked:-20,self:null,icon:"🧻",bg:"#FDDEE6",penalty:true},
+  {cat:"服",name:"靴下がまとまったまま（ペナルティ）",asked:-10,self:null,icon:"🧤",bg:"#FDDEE6",penalty:true},
+  {cat:"服",name:"洗濯物をたたむ",asked:30,self:50,icon:"👗",bg:"#FFE8F3",penalty:false},
+  {cat:"服",name:"自分のものを引き出しに入れる",asked:20,self:40,icon:"🗂️",bg:"#FFE8F3",penalty:false},
+  {cat:"服",name:"かばんを棚にもどす",asked:10,self:20,icon:"🎒",bg:"#FFE8F3",penalty:false},
+  {cat:"リビング",name:"机の上を片付ける",asked:10,self:20,icon:"🪣",bg:"#D4F7EE",penalty:false},
+  {cat:"リビング",name:"お風呂後すぐ服を着ない（ペナルティ）",asked:-20,self:null,icon:"🛁",bg:"#FDDEE6",penalty:true},
+  {cat:"リビング",name:"ソファの上をきれいにする",asked:20,self:40,icon:"🛋️",bg:"#D4F7EE",penalty:false},
+  {cat:"リビング",name:"洋服入れの引き出しを閉める",asked:10,self:20,icon:"🪟",bg:"#D4F7EE",penalty:false},
+  {cat:"リビング",name:"21:30にゲーム・テレビを終了",asked:null,self:10,icon:"📺",bg:"#D4F7EE",penalty:false},
+  {cat:"リビング",name:"翌日の学校の用意を確認",asked:10,self:20,icon:"📅",bg:"#D4F7EE",penalty:false},
+  {cat:"1F",name:"玄関の靴をそろえる",asked:10,self:20,icon:"👟",bg:"#D4EEF7",penalty:false},
+  {cat:"1F",name:"お風呂場の掃除",asked:50,self:70,icon:"🚿",bg:"#D4EEF7",penalty:false},
+  {cat:"3F",name:"布団をきれいに敷く",asked:10,self:20,icon:"🛏️",bg:"#FFF3CC",penalty:false},
+  {cat:"特別",name:"おつかい（お母さんに言われた）",asked:100,self:null,icon:"🛍️",bg:"#FFF3CC",penalty:false},
 ];
 
 const CATS = ["すべて","勉強","服","リビング","1F","3F","特別"];
-const LS_KEY = "okozukai_v1";
-
-function loadState() {
-  try {
-    const raw = localStorage.getItem(LS_KEY);
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch(e) { return null; }
-}
-
-function saveState() {
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify({ total, logs, logId }));
-  } catch(e) {}
-}
-
-const saved = loadState();
-let total  = saved ? saved.total  : 0;
-let logs   = saved ? saved.logs   : [];
-let logId  = saved ? saved.logId  : 0;
 let activeCat = "すべて";
+let childName = 'こども1';
+let todayLogs = [];
+let monthTotal = 0;
 
-// Init month
 const now = new Date();
-document.getElementById("month-tag").textContent = `📅 ${now.getFullYear()}年${now.getMonth()+1}月`;
+const yearMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+document.getElementById('month-tag').textContent = `📅 ${now.getFullYear()}年${now.getMonth()+1}月`;
+
+function selectChild(name) {
+  childName = name;
+  document.querySelectorAll('.name-btn').forEach(b => b.classList.toggle('active', b.textContent === name));
+  loadData();
+}
+
+async function loadData() {
+  document.getElementById('tasks').classList.add('disabled');
+  // Load today's logs
+  const today = now.toISOString().slice(0,10);
+  const { data: todayData } = await sb.from('logs')
+    .select('*')
+    .eq('child_name', childName)
+    .gte('created_at', today + 'T00:00:00')
+    .order('created_at', { ascending: false });
+  todayLogs = todayData || [];
+
+  // Load month total
+  const { data: monthData } = await sb.from('logs')
+    .select('points')
+    .eq('child_name', childName)
+    .gte('created_at', yearMonth + '-01T00:00:00');
+  monthTotal = (monthData || []).reduce((s, r) => s + r.points, 0);
+
+  document.getElementById('total').textContent = monthTotal.toLocaleString();
+  document.getElementById('tasks').classList.remove('disabled');
+  renderLogs();
+}
 
 function renderTabs() {
-  document.getElementById("tabs").innerHTML = CATS.map(c =>
+  document.getElementById('tabs').innerHTML = CATS.map(c =>
     `<div class="tab${c===activeCat?' active':''}" onclick="setcat('${c}')">${c}</div>`
-  ).join("");
+  ).join('');
 }
-
 function setcat(c) { activeCat = c; renderTabs(); renderTasks(); }
 
 function renderTasks() {
-  const list = activeCat === "すべて" ? TASKS : TASKS.filter(t => t.cat === activeCat);
-  document.getElementById("tasks").innerHTML = list.map(t => {
+  const list = activeCat === 'すべて' ? TASKS : TASKS.filter(t => t.cat === activeCat);
+  document.getElementById('tasks').innerHTML = list.map(t => {
     const idx = TASKS.indexOf(t);
-    let btns = "";
+    let btns = '';
     if (t.penalty) {
       btns = `<button class="btn-action btn-penalty" onclick="record(${idx},'penalty')">−${Math.abs(t.asked)}円</button>`;
     } else {
@@ -584,9 +242,9 @@ function renderTasks() {
     const badges = t.penalty
       ? `<span class="pt-badge pen">${t.asked}円</span>`
       : [
-          t.asked !== null ? `<span class="pt-badge asked">言われて +${t.asked}円</span>` : "",
-          t.self  !== null ? `<span class="pt-badge self">自分で +${t.self}円</span>` : "",
-        ].join("");
+          t.asked !== null ? `<span class="pt-badge asked">言われて +${t.asked}円</span>` : '',
+          t.self  !== null ? `<span class="pt-badge self">自分で +${t.self}円</span>` : '',
+        ].join('');
     return `<div class="task-card${t.penalty?' penalty-card':''}">
       <div class="task-body">
         <div class="task-emoji" style="background:${t.bg}">${t.icon}</div>
@@ -597,109 +255,80 @@ function renderTasks() {
         <div class="task-btns">${btns}</div>
       </div>
     </div>`;
-  }).join("");
+  }).join('');
 }
 
-function record(idx, type) {
+async function record(idx, type) {
   const t = TASKS[idx];
-  let pts, label, mode;
-  if (type === "penalty") {
-    pts = t.asked; mode = "minus";
-    label = `${t.icon} ${t.name}　${pts}円`;
-  } else if (type === "asked") {
-    pts = t.asked; mode = "plus";
-    label = `${t.icon} ${t.name}（言われて）`;
-  } else {
-    pts = t.self; mode = "plus";
-    label = `${t.icon} ${t.name}（自分で）`;
-  }
-  total += pts;
-  const id = ++logId;
-  const d = new Date();
-  const time = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
-  logs.unshift({id, label, pts, mode, time});
-  saveState();
-  updateTotal(pts > 0);
+  let pts, mode;
+  if (type === 'penalty')     { pts = t.asked; mode = 'minus'; }
+  else if (type === 'asked')  { pts = t.asked; mode = 'plus'; }
+  else                        { pts = t.self;  mode = 'plus'; }
+
+  showSaving(true);
+  const { data, error } = await sb.from('logs').insert({
+    child_name: childName,
+    task_name: t.name,
+    task_category: t.cat,
+    points: pts,
+    mode: mode,
+    month: yearMonth,
+  }).select().single();
+
+  showSaving(false);
+  if (error) { alert('保存エラー: ' + error.message); return; }
+
+  todayLogs.unshift(data);
+  monthTotal += pts;
+  document.getElementById('total').textContent = monthTotal.toLocaleString();
+  const el = document.getElementById('total');
+  el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
   renderLogs();
   showToast(pts, mode);
   if (pts >= 50) spawnConfetti();
 }
 
-function updateTotal(celebrate) {
-  const el = document.getElementById("total");
-  el.textContent = total.toLocaleString();
-  el.classList.remove("pop");
-  void el.offsetWidth;
-  el.classList.add("pop");
-}
-
 function renderLogs() {
-  const el = document.getElementById("log-list");
-  if (!logs.length) {
-    el.innerHTML = '<div class="log-empty">まだきろくがありません 🌟</div>';
-    return;
-  }
-  el.innerHTML = logs.map(l => `<div class="log-item">
-    <span class="log-pts ${l.mode}">${l.pts > 0 ? '+' + l.pts : l.pts}円</span>
-    <span class="log-text" title="${l.label}">${l.label}</span>
-    <span class="log-time">${l.time}</span>
-    <button class="log-undo" onclick="undo(${l.id})">取消</button>
-  </div>`).join("");
+  const el = document.getElementById('log-list');
+  if (!todayLogs.length) { el.innerHTML = '<div class="log-empty">まだきろくがありません 🌟</div>'; return; }
+  el.innerHTML = todayLogs.map(l => {
+    const t = new Date(l.created_at);
+    const time = `${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;
+    return `<div class="log-item">
+      <span class="log-pts ${l.mode}">${l.points>0?'+'+l.points:l.points}円</span>
+      <span class="log-text">${l.task_name}</span>
+      <span class="log-time">${time}</span>
+    </div>`;
+  }).join('');
 }
 
-function undo(id) {
-  const log = logs.find(l => l.id === id);
-  if (!log) return;
-  total -= log.pts;
-  logs = logs.filter(l => l.id !== id);
-  saveState();
-  document.getElementById("total").textContent = total.toLocaleString();
-  renderLogs();
-}
-
-function clearLogs() {
-  if (!logs.length) return;
-  if (!confirm("きろくをすべてリセットしますか？\n（合計金額も0円にもどります）")) return;
-  total = 0;
-  logs = [];
-  saveState();
-  document.getElementById("total").textContent = "0";
-  renderLogs();
+function showSaving(on) {
+  document.getElementById('saving').classList.toggle('show', on);
 }
 
 function showToast(pts, mode) {
-  const el = document.createElement("div");
+  const el = document.createElement('div');
   el.className = `toast ${mode}`;
   el.textContent = pts > 0 ? `+${pts}円 ゲット！🎉` : `${pts}円 ペナルティ…😢`;
-  document.getElementById("toasts").appendChild(el);
+  document.getElementById('toasts').appendChild(el);
   setTimeout(() => el.remove(), 2300);
 }
 
 function spawnConfetti() {
-  const colors = ["#FFD166","#06D6A0","#118AB2","#EF476F","#9B5DE5","#FF7F3F"];
-  const layer = document.getElementById("confetti");
+  const colors = ['#FFD166','#06D6A0','#118AB2','#EF476F','#9B5DE5','#FF7F3F'];
+  const layer = document.getElementById('confetti');
   for (let i = 0; i < 24; i++) {
-    const piece = document.createElement("div");
-    piece.className = "confetti-piece";
-    piece.style.cssText = `
-      left: ${Math.random()*100}vw;
-      top: -20px;
-      background: ${colors[Math.floor(Math.random()*colors.length)]};
-      width: ${6 + Math.random()*8}px;
-      height: ${6 + Math.random()*8}px;
-      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
-      animation-delay: ${Math.random()*0.5}s;
-      animation-duration: ${0.8 + Math.random()*0.7}s;
-    `;
-    layer.appendChild(piece);
-    setTimeout(() => piece.remove(), 1600);
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `left:${Math.random()*100}vw;top:-20px;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>.5?'50%':'2px'};animation-delay:${Math.random()*.5}s;animation-duration:${.8+Math.random()*.7}s;`;
+    layer.appendChild(p);
+    setTimeout(() => p.remove(), 1600);
   }
 }
 
 renderTabs();
 renderTasks();
-document.getElementById("total").textContent = total.toLocaleString();
-renderLogs();
+loadData();
 </script>
 </body>
 </html>
