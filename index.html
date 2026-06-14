@@ -109,6 +109,8 @@
   .toast.minus{background:var(--red);color:#fff;}
   @keyframes toastIn{from{opacity:0;transform:translateY(16px) scale(.9);}to{opacity:1;transform:translateY(0) scale(1);}}
   @keyframes toastOut{from{opacity:1;}to{opacity:0;transform:translateY(8px);}}
+  .log-undo{font-size:11px;font-weight:700;color:var(--muted);background:none;border:1.5px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;font-family:'Zen Maru Gothic',sans-serif;flex-shrink:0;transition:all .15s;}
+  .log-undo:hover{border-color:var(--red);color:var(--red);}
   .log-list::-webkit-scrollbar{width:4px;}
   .log-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 
@@ -345,12 +347,27 @@ function renderLogs() {
       <span class="log-pts ${l.mode}">${l.points>0?'+'+l.points:l.points}円</span>
       <span class="log-text">${l.task_name}</span>
       <span class="log-time">${dateStr} ${timeStr}</span>
+      <button class="log-undo" onclick="undoLog('${l.id}')">取消</button>
     </div>`;
   }).join('');
 }
 
 function showSaving(on) {
   document.getElementById('saving').classList.toggle('show', on);
+}
+
+async function undoLog(id) {
+  showSaving(true);
+  const { error } = await sb.from('logs').delete().eq('id', id);
+  showSaving(false);
+  if (error) { alert('削除エラー: ' + error.message); return; }
+  const log = todayLogs.find(l => l.id === id);
+  if (log) {
+    monthTotal -= log.points;
+    document.getElementById('total').textContent = monthTotal.toLocaleString();
+  }
+  todayLogs = todayLogs.filter(l => l.id !== id);
+  renderLogs();
 }
 
 function showToast(pts, mode) {
