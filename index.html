@@ -77,6 +77,11 @@
   .log-section{margin-top:1.5rem;background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);box-shadow:var(--shadow);overflow:hidden;}
   .log-header{padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid var(--border);}
   .log-header-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}
+  .log-stats{display:flex;gap:8px;padding:12px 14px;border-bottom:2px solid var(--border);}
+  .log-stat-card{flex:1;border-radius:12px;padding:8px 6px;text-align:center;}
+  .log-stat-label{font-size:11px;font-weight:700;margin-bottom:4px;}
+  .log-stat-num{font-family:'Nunito',sans-serif;font-size:22px;font-weight:900;line-height:1;}
+  .log-stat-unit{font-size:10px;font-weight:700;}
   .log-list{max-height:480px;overflow-y:auto;}
   .log-empty{padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
   .log-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);animation:slideIn .25s ease;}
@@ -136,6 +141,20 @@
   <div class="log-section">
     <div class="log-header">
       <div class="log-header-title">📋 きろく</div>
+    </div>
+    <div class="log-stats" id="log-stats">
+      <div class="log-stat-card" style="background:var(--green-light)">
+        <div class="log-stat-label" style="color:var(--green-dark)">🟢 自分で</div>
+        <div class="log-stat-num" style="color:var(--green-dark)"><span id="stat-self">0</span><span class="log-stat-unit">件</span></div>
+      </div>
+      <div class="log-stat-card" style="background:var(--blue-light)">
+        <div class="log-stat-label" style="color:var(--blue-dark)">🔵 言われて</div>
+        <div class="log-stat-num" style="color:var(--blue-dark)"><span id="stat-asked">0</span><span class="log-stat-unit">件</span></div>
+      </div>
+      <div class="log-stat-card" style="background:var(--red-light)">
+        <div class="log-stat-label" style="color:var(--red-dark)">🔴 ペナルティ</div>
+        <div class="log-stat-num" style="color:var(--red-dark)"><span id="stat-penalty">0</span><span class="log-stat-unit">件</span></div>
+      </div>
     </div>
     <div class="log-list" id="log-list"><div class="log-empty">まだきろくがありません 🌟</div></div>
   </div>
@@ -272,6 +291,10 @@ async function record(taskId,type){
 
 function renderLogs(){
   const el=document.getElementById('log-list');
+  // Update stat cards
+  document.getElementById('stat-self').textContent=todayLogs.filter(l=>l.mode==='plus'||l.mode==='self').length;
+  document.getElementById('stat-asked').textContent=todayLogs.filter(l=>l.mode==='asked').length;
+  document.getElementById('stat-penalty').textContent=todayLogs.filter(l=>l.mode==='minus').length;
   if(!todayLogs.length){el.innerHTML='<div class="log-empty">まだきろくがありません 🌟</div>';return;}
   el.innerHTML=todayLogs.map(l=>{
     const t=new Date(l.created_at);
