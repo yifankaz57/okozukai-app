@@ -15,16 +15,15 @@
     --radius:18px;--shadow:0 4px 20px rgba(0,0,0,0.08);--shadow-hover:0 8px 30px rgba(0,0,0,0.14);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Zen Maru Gothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .5s ease;}
-  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,var(--dot-color,#FFD16622) 1.5px,transparent 1.5px);background-size:28px 28px;pointer-events:none;z-index:0;transition:background-image .5s;}
-  body.theme-satsuki{--bg:#EEF6FF;--dot-color:#90CAF922;}
-  body.theme-satsuki .header{border-color:#BBDEFB;}
-  body.theme-satsuki .name-selector{border-color:#BBDEFB;}
+  body{font-family:'Zen Maru Gothic',sans-serif;background:#FFF8F0;color:var(--text);min-height:100vh;transition:background .5s ease;}
+  body::before{content:'';position:fixed;inset:0;background-size:28px 28px;pointer-events:none;z-index:0;}
+  body.theme-satsuki::before{background-image:radial-gradient(circle,#90CAF933 1.5px,transparent 1.5px);}
+  body.theme-aoi::before{background-image:radial-gradient(circle,#F4849233 1.5px,transparent 1.5px);}
+  body.theme-default::before{background-image:radial-gradient(circle,#FFD16622 1.5px,transparent 1.5px);}
+  body.theme-satsuki .header,.theme-satsuki .name-selector,.theme-satsuki .log-section,.theme-satsuki .task-card{border-color:#BBDEFB;}
+  body.theme-aoi .header,.theme-aoi .name-selector,.theme-aoi .log-section,.theme-aoi .task-card{border-color:#F8BBD0;}
   body.theme-satsuki .child-name-display{background:#DDEEFF;border-color:#90CAF9;color:#0A3D6B;}
   body.theme-satsuki .month-tag{background:#DDEEFF;border-color:#90CAF9;color:#0A3D6B;}
-  body.theme-aoi{--bg:#FFF0F5;--dot-color:#F4849222;}
-  body.theme-aoi .header{border-color:#F8BBD0;}
-  body.theme-aoi .name-selector{border-color:#F8BBD0;}
   body.theme-aoi .child-name-display{background:#FFE0EE;border-color:#F48492;color:#7A1535;}
   body.theme-aoi .month-tag{background:#FFE0EE;border-color:#F48492;color:#7A1535;}
   .container{max-width:540px;margin:0 auto;padding:1.5rem 1rem 4rem;position:relative;z-index:1;}
@@ -224,9 +223,17 @@ const yearMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0
 document.getElementById('month-tag').textContent = `📅 ${now.getFullYear()}年${now.getMonth()+1}月`;
 
 function applyTheme(name) {
-  document.body.classList.remove('theme-satsuki','theme-aoi');
-  if (name === 'さつき') document.body.classList.add('theme-satsuki');
-  if (name === 'あおい') document.body.classList.add('theme-aoi');
+  document.body.classList.remove('theme-satsuki','theme-aoi','theme-default');
+  if (name === 'さつき') {
+    document.body.classList.add('theme-satsuki');
+    document.body.style.background = '#EEF6FF';
+  } else if (name === 'あおい') {
+    document.body.classList.add('theme-aoi');
+    document.body.style.background = '#FFF0F5';
+  } else {
+    document.body.classList.add('theme-default');
+    document.body.style.background = '#FFF8F0';
+  }
 }
 
 function selectChild(name) {
