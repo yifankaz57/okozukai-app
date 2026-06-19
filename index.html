@@ -116,6 +116,10 @@
   @keyframes toastOut{from{opacity:1;}to{opacity:0;transform:translateY(8px);}}
   .log-list::-webkit-scrollbar{width:4px;}
   .log-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+  .scroll-top{position:fixed;bottom:24px;right:20px;width:48px;height:48px;border-radius:50%;background:var(--yellow);border:none;box-shadow:0 4px 16px rgba(0,0,0,0.18);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;}
+  .scroll-top.show{opacity:1;pointer-events:all;}
+  .scroll-top:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.22);}
+  .scroll-top:active{transform:scale(.92);}
 </style>
 </head>
 <body>
@@ -344,6 +348,13 @@ function spawnConfetti(){
 
 loadTasks();
 loadData();
+</script>
+<button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲</button>
+
+<script>
+window.addEventListener('scroll',()=>{
+  document.getElementById('scroll-top').classList.toggle('show', window.scrollY > 200);
+});
 </script>
 </body>
 </html>
