@@ -88,6 +88,9 @@
   .pw-btn:hover{background:#6D28D9;}
   .pw-error{color:var(--red);font-size:13px;font-weight:700;margin-top:8px;min-height:20px;}
   .loading{padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
+  .empty{padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
+  .btn-log-del{background:none;border:none;color:#CCC;font-size:15px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .15s;line-height:1;}
+  .btn-log-del:hover{background:var(--red-light);color:var(--red-dark);}
 
   /* ===== TASK MANAGER ===== */
   .task-manager-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:10px;}
@@ -179,8 +182,8 @@
     </div>
     <div class="log-table-wrap">
       <table class="log-table">
-        <thead><tr><th>日時</th><th>こども</th><th>タスク</th><th>カテゴリ</th><th>種別</th><th>金額</th></tr></thead>
-        <tbody id="log-tbody"><tr><td colspan="6" class="loading">読み込み中…</td></tr></tbody>
+        <thead><tr><th>日時</th><th>こども</th><th>タスク</th><th>カテゴリ</th><th>種別</th><th>金額</th><th></th></tr></thead>
+        <tbody id="log-tbody"><tr><td colspan="7" class="loading">読み込み中…</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -402,7 +405,7 @@ function renderTable(){
   const logs=filteredLogs();
   document.getElementById('log-count').textContent=`${logs.length}件`;
   const tbody=document.getElementById('log-tbody');
-  if(!logs.length){tbody.innerHTML='<tr><td colspan="6" class="empty">きろくがありません</td></tr>';return;}
+  if(!logs.length){tbody.innerHTML='<tr><td colspan="7" class="empty">きろくがありません</td></tr>';return;}
   tbody.innerHTML=logs.map(l=>{
     const d=new Date(l.created_at);
     const dateStr=`${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
@@ -415,11 +418,20 @@ function renderTable(){
       <td style="font-size:12px;color:var(--muted)">${l.task_category}</td>
       <td><span class="mode-badge ${l.mode}">${l.mode==='asked'?'言われて':l.mode==='minus'?'ペナルティ':'自分で'}</span></td>
       <td><span class="pts-badge ${l.mode}">${l.points>0?'+'+l.points:l.points}円</span></td>
+      <td><button class="btn-log-del" onclick="deleteLog('${l.id}')" title="削除">🗑️</button></td>
     </tr>`;
   }).join('');
 }
 
 // ===== TASK MANAGER =====
+async function deleteLog(id){
+  if(!confirm('このきろくを削除しますか？')) return;
+  const{error}=await sb.from('logs').delete().eq('id',id);
+  if(error){alert('削除エラー: '+error.message);return;}
+  allLogs=allLogs.filter(l=>l.id!==id);
+  renderSummary();renderChart();renderTable();
+}
+
 async function loadTasks(){
   const{data}=await sb.from('tasks').select('*').order('sort_order');
   allTasks=data||[];
