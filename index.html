@@ -60,6 +60,8 @@
   .tab.active{background:var(--yellow);color:var(--yellow-dark);border-color:var(--yellow);transform:translateY(-1px);box-shadow:0 3px 10px #FFD16666;}
   .tasks{display:flex;flex-direction:column;gap:10px;}
   .tasks.disabled{opacity:.5;pointer-events:none;}
+  .past-notice{display:none;background:#FFF3CC;border:1.5px solid var(--yellow);border-radius:14px;padding:10px 16px;font-size:13px;font-weight:700;color:var(--yellow-dark);text-align:center;margin-bottom:1rem;}
+  .past-notice.show{display:block;}
   .task-card{background:var(--surface);border-radius:var(--radius);border:2px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:all .2s;}
   .task-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px);}
   .task-card.penalty-card{border-color:#FFCCD9;}
@@ -151,6 +153,7 @@
       <button class="month-nav-btn" onclick="changeMonth(1)">▶</button>
     </div>
   </div>
+  <div class="past-notice" id="past-notice">📅 過去の月は閲覧のみです</div>
   <div class="tabs-wrap"><div class="tabs" id="tabs"></div></div>
   <div class="tasks" id="tasks"><div class="loading-screen">📋 タスクを読み込み中…</div></div>
   <div class="log-section">
@@ -305,6 +308,13 @@ async function loadData(){
   monthTotal = (monthData||[]).reduce((s,r)=>s+r.points,0);
   document.getElementById('total').textContent = monthTotal.toLocaleString();
   document.getElementById('tasks').classList.remove('disabled');
+  // Lock input for past months
+  if(!isCurrentMonth){
+    document.getElementById('tasks').classList.add('disabled');
+    document.getElementById('past-notice').classList.add('show');
+  } else {
+    document.getElementById('past-notice').classList.remove('show');
+  }
   renderLogs();
 }
 
