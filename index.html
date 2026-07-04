@@ -297,12 +297,12 @@ async function loadData(){
   const [{data:logsData},{data:monthData}] = await Promise.all([
     // 当月ログ（今月なら今日分のみ、過去月なら全件）
     sb.from('logs').select('*').eq('child_name',childName)
-      .gte('created_at', isCurrentMonth ? today+'T00:00:00' : ym+'-01T00:00:00')
-      .lt('created_at', isCurrentMonth ? today+'T23:59:59' : nm+'-01T00:00:00')
+      .gte('created_at', isCurrentMonth ? today+'T00:00:00+09:00' : ym+'-01T00:00:00+09:00')
+      .lt('created_at', isCurrentMonth ? today+'T23:59:59+09:00' : nm+'-01T00:00:00+09:00')
       .order('created_at',{ascending:false}),
     sb.from('logs').select('points').eq('child_name',childName)
-      .gte('created_at',ym+'-01T00:00:00')
-      .lt('created_at',nm+'-01T00:00:00')
+      .gte('created_at',ym+'-01T00:00:00+09:00')
+      .lt('created_at',nm+'-01T00:00:00+09:00')
   ]);
   todayLogs = logsData||[];
   monthTotal = (monthData||[]).reduce((s,r)=>s+r.points,0);
