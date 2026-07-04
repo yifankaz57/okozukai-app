@@ -2,6 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="おこづかい">
@@ -290,6 +293,7 @@ function renderTasks(){
 async function loadData(){
   document.getElementById('tasks').classList.add('disabled');
   const ym = getYearMonth(currentDate);
+  console.log('loadData ym:', ym, 'nm:', getNextMonth(currentDate), 'child:', childName);
   const nm = getNextMonth(currentDate);
   const isCurrentMonth = currentDate.getFullYear()===now.getFullYear() && currentDate.getMonth()===now.getMonth();
 
